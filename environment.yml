@@ -1,0 +1,11 @@
+name: secop
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13.5
+  - pip
+  - pip:
+    - sodapy
+    - pandas
+    - numpy
+    - matplotlib
