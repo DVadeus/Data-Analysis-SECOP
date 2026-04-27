@@ -1,43 +1,100 @@
 import pandas as pd
 
+def clean_columns(df):
+    df.columns = df.columns.str.lower()
+    return df
+
 def to_dataframe(data):
+    
     df = pd.DataFrame(data)
+
+    if df.empty:
+        return df
+    
+    df = clean_columns(df)
 
     # Transformación de fechas
 
-    if "fecha_de_inicio_del_contrato" in df.columns:
-        df["fecha_de_inicio_del_contrato"] = pd.to_datetime(df["fecha_de_inicio_del_contrato"], errors = "coerce")
+    date_cols = [
+        "fecha_de_inicio_del_contrato",
+        "fecha_de_firma",
+        "fecha_de_fin_del_contrato",
+        "ultima_actualizacion",
+        "fecha_de_notificaci_n_de_prorrogaci_n",
+        "fecha_inicio_liquidacion",
+        "fecha_fin_liquidacion"
+    ]
 
-    if "fecha_de_firma" in df.columns:
-        df["fecha_de_firma"] = pd.to_datetime(df["fecha_de_firma"], errors="coerce")
+    for col in date_cols:
+        if col in df.columns:
+            df[col] = pd.to_datetime(df[col], errors = "coerce")
 
-    if "fecha_de_fin_del_contrato" in df.columns:
-        df["fecha_de_fin_del_contrato"] = pd.to_datetime(df["fecha_de_fin_del_contrato"], errors="coerce")
-    
-    if "ultima_actualizacion" in df.columns:
-        df["ultima_actualizacion"] = pd.to_datetime(df["ultima_actualizacion"], errors="coerce")
+    # Transformación de datos numéricos
 
-    if "fecha_de_notificaci_n_de_prorrogaci_n" in df.columns:
-        df["fecha_de_notificaci_n_de_prorrogaci_n"] = pd.to_datetime(df["fecha_de_notificaci_n_de_prorrogaci_n"], errors="coerce")
-    
-    if "fecha_inicio_liquidacion" in df.columns:
-        df["fecha_inicio_liquidacion"] = pd.to_datetime(df["fecha_inicio_liquidacion"], errors="coerce")
-    
-    if "fecha_fin_liquidacion" in df.columns:
-        df["fecha_fin_liquidacion"] = pd.to_datetime(df["fecha_fin_liquidacion"], errors="coerce")
-    
+    numeric_cols = [
+        'valor_del_contrato',
+        'valor_de_pago_adelantado',
+        'valor_facturado',
+        'valor_pendiente_de_pago',
+        'valor_pagado',
+        'valor_amortizado',
+        'valor_pendiente_de',
+        'valor_pendiente_de_ejecucion',
+        'saldo_cdp',
+        'saldo_vigencia',
+        'presupuesto_general_de_la_nacion_pgn',
+        'sistema_general_de_participaciones',
+        'sistema_general_de_regal_as',
+        'recursos_propios_alcald_as_gobernaciones_y_resguardos_ind_genas_',
+        'recursos_de_credito',
+        'recursos_propios'
+    ]
+
+    for col in numeric_cols:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors = "coerce")
+
+    # Transformación de Booleanos
+
+    bool_map = {"Si": True, "No": False}
+
+    bool_cols = [
+        "es_grupo",
+        "es_pyme",
+        "liquidaci_n",
+        "obligaci_n_ambiental",
+        "obligaciones_postconsumo",
+        "reversion",
+        "espostconflicto",
+        "el_contrato_puede_ser_prorrogado",
+        "tipo_de_documento_ordenador_del_gasto",
+        "tipo_de_documento_supervisor",
+        "documentos_tipo"
+    ]
+
+    for col in bool_cols:
+        if col in df.colums:
+            df[col] = df[col].map(bool_map)
+
     # Transformación de columnas categóricas
 
+    "departamento"
+    "ciudad"
+    "localizaci_n"
+    "orden"
+
+    
+
     if "departamento" in df.columns:
-        df["departamento"] = df["departamento"].astype('category')
+        df[] = df["departamento"].astype('category')
     
     if "ciudad" in df.columns:
-        df["ciudad"] = df["ciudad"].astype('category')
+        df[] = df["ciudad"].astype('category')
 
     if "localizaci_n" in df.columns:
-        df["localizaci_n"] = df["localizaci_n"].astype('category')
+        df[] = df["localizaci_n"].astype('category')
 
-    if "orden" in df.columns:
+    if  in df.columns:
         df["orden"] = df["orden"].astype('category')
 
     if "sector" in df.columns:
@@ -88,18 +145,5 @@ def to_dataframe(data):
     if "tipo_de_cuenta" in df.columns:
         df["tipo_de_cuenta"] = df["tipo_de_cuenta"].astype('category')
 
-
-    # Columnas booleanas
-    df["es_grupo"] = df["es_grupo"].map({'Si': True, 'No': False})
-    df["es_pyme"] = df["es_pyme"].map({'Si': True, 'No': False})
-    df["liquidaci_n"] = df["liquidaci_n"].map({'Si': True, 'No': False})
-    df["obligaci_n_ambiental"] = df["obligaci_n_ambiental"].map({'Si': True, 'No': False})
-    df["obligaciones_postconsumo"] = df["obligaciones_postconsumo"].map({'Si': True, 'No': False})
-    df["reversion"] = df["reversion"].map({'Si': True, 'No': False})
-    df["espostconflicto"] = df["espostconflicto"].map({'Si': True, 'No': False})
-    df["el_contrato_puede_ser_prorrogado"] = df["el_contrato_puede_ser_prorrogado"].map({'Si': True, 'No': False})
-    df["tipo_de_documento_ordenador_del_gasto"] = df["tipo_de_documento_ordenador_del_gasto"].map({'Si': True, 'No': False})
-    df["tipo_de_documento_supervisor"] = df["tipo_de_documento_supervisor"].map({'Si': True, 'No': False})
-    df["documentos_tipo"] = df["documentos_tipo"].map({'Si': True, 'No': False})
 
     return df
